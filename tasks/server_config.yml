@@ -1,0 +1,28 @@
+---
+- name: Copy client certificate to the server
+  ansible.builtin.copy:
+    content: "{{ lxd_client_cert.certificate }}"
+    dest: "~/lxd_client_certificates/{{ ansible_hostname }}_{{ lxd_client_user }}.crt"
+  delegate_to: "{{ lxd_client_server }}"
+  register: lxd_client_copy_cert
+
+- name: Add new client certificate in lxd
+  ansible.builtin.command:
+    cmd: "lxc config trust add {{ ansible_hostname }}_{{ lxd_client_user }}.crt"
+    chdir: "~/lxd_client_certificates"
+  delegate_to: "{{ lxd_client_server }}"
+  when: lxd_client_copy_cert.changed
+
+- name: Copy server certificate to the client
+  ansible.builtin.copy:
+    content: "{{
+      (
+        (
+          lxd_client_server_info.results |
+          selectattr('item', 'equalto', lxd_client_server)
+        ).0.stdout |
+        from_yaml
+      ).environment.certificate }}"
+    dest: "~/.config/lxc/servercerts/{{ lxd_client_server }}.crt"
+  become: yes
+  become_user: "{{ lxd_client_user }}"

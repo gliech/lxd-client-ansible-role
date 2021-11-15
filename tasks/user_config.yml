@@ -1,0 +1,63 @@
+---
+- name: Ensure that the lxc config directory exists
+  ansible.builtin.file:
+    path: ~/.config/lxc/servercerts
+    mode: 0755
+    state: directory
+  become: yes
+  become_user: "{{ lxd_client_user }}"
+
+- name: Generate a client key
+  community.crypto.openssl_privatekey:
+    path: ~/.config/lxc/client.key
+    type: ECC
+    curve: secp384r1
+  become: yes
+  become_user: "{{ lxd_client_user }}"
+
+- name: Generate certificate signing request
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: ~/.config/lxc/client.key
+    digest: sha384
+    organization_name: linuxcontainers.org
+    key_usage:
+      - Digital Signature
+      - Key Encipherment
+    key_usage_critical: yes
+    extended_key_usage:
+      - TLS Web Client Authentication
+    basic_constraints:
+      - CA:FALSE
+    basic_constraints_critical: yes
+    use_common_name_for_san: no
+    common_name: "{{ lxd_client_user }}@{{ ansible_hostname }}"
+  register: lxd_client_csr_pipe
+  become: yes
+  become_user: "{{ lxd_client_user }}"
+  changed_when: no
+
+- name: Generate client certificate
+  community.crypto.x509_certificate:
+    path: ~/.config/lxc/client.crt
+    privatekey_path: ~/.config/lxc/client.key
+    csr_content: "{{ lxd_client_csr_pipe.csr }}"
+    provider: selfsigned
+    selfsigned_create_subject_key_identifier: never_create
+    selfsigned_digest: sha384
+    return_content: yes
+  register: lxd_client_cert
+  become: yes
+  become_user: "{{ lxd_client_user }}"
+
+- name: Configure lxd server connections
+  include_tasks: server_config.yml
+  loop: "{{ lxd_client_servers }}"
+  loop_control:
+    loop_var: lxd_client_server
+
+- name: test
+  ansible.builtin.template:
+    src: lxc_config.yml.j2
+    dest: "~/.config/lxc/config.yml"
+  become: yes
+  become_user: "{{ lxd_client_user }}"

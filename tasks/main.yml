@@ -1,0 +1,35 @@
+---
+- name: Install snap
+  ansible.builtin.package:
+    name: snapd
+    state: present
+  become: yes
+
+- name: Install lxd
+  community.general.snap:
+    name: lxd
+    state: present
+  become: yes
+
+- name: Create a dir for client certs on the server
+  ansible.builtin.file:
+    path: ~/lxd_client_certificates
+    mode: 0755
+    state: directory
+  run_once: yes
+  delegate_to: "{{ item }}"
+  loop: "{{ lxd_client_servers }}"
+
+- name: Get the server certificate
+  ansible.builtin.command: lxc info
+  register: lxd_client_server_info
+  changed_when: no
+  run_once: yes
+  delegate_to: "{{ item }}"
+  loop: "{{ lxd_client_servers }}"
+
+- name: Configure lxc users
+  include_tasks: user_config.yml
+  loop: "{{ lxd_client_users }}"
+  loop_control:
+    loop_var: lxd_client_user

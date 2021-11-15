@@ -1,0 +1,25 @@
+---
+default-remote: {{ lxd_client_default_remote | default(lxd_client_servers[0]) }}
+remotes:
+  images:
+    addr: https://images.linuxcontainers.org
+    protocol: simplestreams
+    public: true
+  local:
+    addr: unix://
+    public: false
+{% for server in lxd_client_servers %}
+{% set server_addr = ((lxd_client_server_info.results | selectattr('item',
+'equalto', server)).0.stdout | from_yaml).config['core.https_address'] %}
+  {{ server }}:
+    addr: https://
+    {%- if server_addr.startswith('[::]:') -%}
+      {{ hostvars[server].ansible_host }}:{{ condition.split(':')[3] }}
+    {% else -%}
+      {{ server_addr }}
+    {% endif -%}
+    auth_type: tls
+    protocol: lxd
+    public: false
+{% endfor %}
+aliases: {}

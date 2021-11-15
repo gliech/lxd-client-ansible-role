@@ -1,0 +1,14 @@
+---
+dependencies: []
+
+galaxy_info:
+  role_name: lxc_client
+  author: gliech
+  description: Install lxd and configure remotes
+  license: BSD-4-Clause
+  min_ansible_version: 2.9
+  platforms:
+    - name: Fedora
+      versions:
+        - 34
+  galaxy_tags: []
