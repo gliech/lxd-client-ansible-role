@@ -1,0 +1,36 @@
+---
+- name: Verify
+  hosts: lxd_client
+  gather_facts: false
+  tasks:
+    - name: Get facts from localhost
+      ansible.builtin.setup:
+      register: local_vars
+      delegate_to: localhost
+
+    - name: Replace server ip to work around docker networking
+      ansible.builtin.replace:
+        path: ~/.config/lxc/config.yml
+        regexp: (?<=https://)mol-lxc-host
+        # regexp: \d+(\.\d+){3}
+        replace: "{{ local_vars.ansible_facts.ansible_default_ipv4.address }}"
+
+    - name: Launch a container
+      ansible.builtin.command: lxc launch images:busybox/1.34.1 mol
+      changed_when: yes
+
+    - name: Read container list
+      ansible.builtin.command: lxc ls --format json
+      register: container_list
+      changed_when: no
+
+    - name: Verify the container is running
+      ansible.builtin.assert:
+        that:
+          (container_list.stdout | from_json | selectattr('name', 'eq', 'mol') |
+          first).status == 'Running'
+        quiet: true
+
+    - name: Delete the container
+      ansible.builtin.command: lxc delete --force mol
+      changed_when: yes

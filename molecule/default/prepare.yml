@@ -1,0 +1,53 @@
+---
+- name: Prepare Archlinux
+  hosts: all
+  tasks:
+    - name: Initialize package cache
+      package:
+        update_cache: yes
+        upgrade: yes
+      become: yes
+      when: ansible_pkg_mgr in ['apt', 'pacman']
+- name: Prepare LXD client
+  hosts: lxd_client
+  tasks:
+    - name: Install python cryptography
+      package:
+        name: python-cryptography
+        state: present
+      become: yes
+- name: Prepare LXD server
+  hosts: lxd_server
+  tasks:
+    - name: "Import lxd"
+      import_role:
+        name: "gliech.lxd"
+      vars:
+        lxd_config:
+          config:
+            core.https_address: "[::]:8512"
+          networks: []
+          storage_pools:
+            - config:
+                source: /var/lib/lxd/storage-pools/default
+              description: ""
+              name: default
+              driver: dir
+          profiles:
+            - config:
+                security.privileged: "true"
+              description: Default LXD profile
+              devices:
+                root:
+                  path: /
+                  pool: default
+                  type: disk
+              name: default
+          projects:
+            - config:
+                features.images: "true"
+                features.networks: "true"
+                features.profiles: "true"
+                features.storage.volumes: "true"
+              description: Default LXD project
+              name: default

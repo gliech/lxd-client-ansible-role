@@ -2,7 +2,7 @@
 dependencies: []
 
 galaxy_info:
-  role_name: lxc_client
+  role_name: lxd_client
   author: gliech
   description: Install lxd and configure remotes
   license: BSD-4-Clause

@@ -1,0 +1,6 @@
+---
+- name: Install lxd
+  community.general.snap:
+    name: lxd
+    state: present
+  become: yes

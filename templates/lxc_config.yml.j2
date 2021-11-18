@@ -14,7 +14,7 @@ remotes:
   {{ server }}:
     addr: https://
     {%- if server_addr.startswith('[::]:') -%}
-      {{ hostvars[server].ansible_host }}:{{ condition.split(':')[3] }}
+      {{ hostvars[server].inventory_hostname }}:{{ server_addr.split(':')[3] }}
     {% else -%}
       {{ server_addr }}
     {% endif -%}

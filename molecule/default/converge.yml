@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: lxd_client
+  tasks:
+    - name: "Import lxd"
+      import_role:
+        name: "gliech.lxd_client"
+      vars:
+        lxd_client_servers: "{{ groups.lxd_server }}"

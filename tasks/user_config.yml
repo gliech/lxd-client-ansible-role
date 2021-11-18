@@ -55,9 +55,10 @@
   loop_control:
     loop_var: lxd_client_server
 
-- name: test
+- name: Create client config file
   ansible.builtin.template:
     src: lxc_config.yml.j2
     dest: "~/.config/lxc/config.yml"
+    mode: 0600
   become: yes
   become_user: "{{ lxd_client_user }}"

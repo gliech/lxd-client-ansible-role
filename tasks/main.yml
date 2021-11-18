@@ -1,15 +1,7 @@
 ---
-- name: Install snap
-  ansible.builtin.package:
-    name: snapd
-    state: present
-  become: yes
-
 - name: Install lxd
-  community.general.snap:
-    name: lxd
-    state: present
-  become: yes
+  ansible.builtin.include_tasks:
+    file: "install_{{ (ansible_pkg_mgr == 'pacman') | ternary('pacman', 'snap') }}.yml"
 
 - name: Create a dir for client certs on the server
   ansible.builtin.file:
