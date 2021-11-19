@@ -9,7 +9,7 @@ lint: |
   yamllint --strict ./
   ansible-lint
 driver:
-  name: containers
+  name: ${MOL_DRIVER:-podman}
 platforms:
   - name: mol-lxc-host
     image: gliech/docker-archlinux-ansible:branch-master
