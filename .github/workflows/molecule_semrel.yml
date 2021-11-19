@@ -31,7 +31,6 @@ jobs:
         env:
           PY_COLORS: "1"
           ANSIBLE_FORCE_COLOR: "1"
-          MOL_DRIVER: docker
 
       - name: Install nodejs
         if: github.event_name == 'push'
