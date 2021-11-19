@@ -1,5 +1,6 @@
 ansible == 4.*
-molecule[containers] == 3.*
+molecule == 3.*
+molecule-containers == 1.*
 yamllint == 1.*
 ansible-lint == 5.*
 jq == 1.2.1
