@@ -1,18 +1,17 @@
 ---
 dependencies: []
-
 galaxy_info:
   role_name: lxd_client
   author: gliech
   description: Install LXD and configure one or more other hosts from the
     Ansible inventory as remotes.
-  license: BSD-4-Clause
-  min_ansible_version: 2.9
+  license: GPL-3.0-only
+  min_ansible_version: "2.9"
   platforms:
     - name: Fedora
       versions:
-        - 34
-    - name: Archlinux
-      version:
-        - any
+        - "34"
+    - name: ArchLinux
+      versions:
+        - all
   galaxy_tags: []
