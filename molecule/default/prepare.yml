@@ -1,26 +1,28 @@
 ---
-- name: Prepare Archlinux
+- name: Prepare
   hosts: all
   tasks:
     - name: Initialize package cache
-      package:
+      ansible.builtin.package:
         update_cache: yes
         upgrade: yes
       become: yes
       when: ansible_pkg_mgr in ['apt', 'pacman']
+
 - name: Prepare LXD client
   hosts: lxd_client
   tasks:
     - name: Install python cryptography
-      package:
+      ansible.builtin.package:
         name: python-cryptography
         state: present
       become: yes
+
 - name: Prepare LXD server
   hosts: lxd_server
   tasks:
     - name: "Import lxd"
-      import_role:
+      ansible.builtin.import_role:
         name: "gliech.lxd"
       vars:
         lxd_config:

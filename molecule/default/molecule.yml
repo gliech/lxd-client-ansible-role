@@ -4,12 +4,8 @@ dependency:
   options:
     requirements-file: molecule/default/requirements.yml
     role-file: molecule/default/requirements.yml
-lint: |
-  set -e
-  yamllint --strict ./
-  ansible-lint
 driver:
-  name: ${MOL_DRIVER:-podman}
+  name: podman
 platforms:
   - name: mol-lxc-host
     image: gliech/docker-archlinux-ansible:branch-master
@@ -55,7 +51,6 @@ scenario:
     - destroy
   test_sequence:
     - dependency
-    - lint
     - syntax
     - create
     - prepare

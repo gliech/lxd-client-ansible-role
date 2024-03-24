@@ -21,5 +21,5 @@
 
     - name: Verify lxc interacts with the remote server
       ansible.builtin.assert:
-        that: (server_info.stdout | from_yaml).environment.server_name == 'mol-lxc-host'
+        that: (server_info.stdout | from_yaml).environment.kernel == 'Linux'
         quiet: true

@@ -1,6 +1,4 @@
 ---
+collections: []
 roles:
-  - gliech.lxd
-collections:
-  - name: moreati.jq
-    version: 0.2.1
+  - name: gliech.lxd
