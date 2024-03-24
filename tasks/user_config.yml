@@ -50,7 +50,7 @@
   become_user: "{{ lxd_client_user }}"
 
 - name: Configure lxd server connections
-  include_tasks: server_config.yml
+  ansible.builtin.include_tasks: server_config.yml
   loop: "{{ lxd_client_servers }}"
   loop_control:
     loop_var: lxd_client_server

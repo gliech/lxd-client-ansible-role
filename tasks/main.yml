@@ -21,7 +21,7 @@
   loop: "{{ lxd_client_servers }}"
 
 - name: Configure lxc users
-  include_tasks: user_config.yml
+  ansible.builtin.include_tasks: user_config.yml
   loop: "{{ lxd_client_users }}"
   loop_control:
     loop_var: lxd_client_user

@@ -12,6 +12,7 @@
     cmd: lxc config trust add {{ ansible_hostname }}_{{ lxd_client_user }}.crt
     chdir: ~/lxd_client_certificates
   delegate_to: "{{ lxd_client_server }}"
+  changed_when: true
   when: lxd_client_copy_cert.changed
 
 - name: Copy server certificate to the client
