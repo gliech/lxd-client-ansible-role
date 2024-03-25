@@ -49,11 +49,11 @@
   become: yes
   become_user: "{{ lxd_client_user }}"
 
-- name: Configure lxd server connections
+- name: Configure lxd remote connections
   ansible.builtin.include_tasks: server_config.yml
-  loop: "{{ lxd_client_servers }}"
+  loop: "{{ lxd_client_remotes }}"
   loop_control:
-    loop_var: lxd_client_server
+    loop_var: lxd_client_remote
 
 - name: Create client config file
   ansible.builtin.template:

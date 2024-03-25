@@ -6,4 +6,4 @@
       ansible.builtin.import_role:
         name: "gliech.lxd_client"
       vars:
-        lxd_client_servers: "{{ groups.lxd_server }}"
+        lxd_client_remotes: "{{ groups.lxd_server }}"
