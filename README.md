@@ -1,4 +1,4 @@
-# ['LXD Client Ansible Role'][1]
+# [LXD Client Ansible Role][1]
 
 [![test & release][2]][3]
 
@@ -7,7 +7,14 @@ Ansible inventory as remotes.
 
 ## Requirements
 
-None.
+This role requires the LXD remotes to be defined in the same inventory as the
+clients that are being configured. That is because it uses the ansible
+connections with the servers as trusted channel to transfer the users client
+certificates to the remotes.
+
+This also means that, if the LXD servers are provisioned in the same playbook
+as the clients, the installation of the servers is a prerequisite step for this
+role to run.
 
 ## Role Variables
 
