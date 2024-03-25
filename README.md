@@ -58,10 +58,49 @@ None.
 ## Example Playbook
 
 ```yaml
-- hosts: all
+- hosts: lxd_servers
   tasks:
-    - ansible.builtin.import_role:
+    - name: Configure LXD servers
+      ansible.builtin.import_role:
+        name: gliech.lxd
+      vars:
+        lxd_config:
+          config: {}
+          networks: []
+          storage_pools:
+            - config:
+                source: /var/lib/lxd/storage-pools/default
+              description: ""
+              name: default
+              driver: dir
+          profiles:
+            - config:
+                security.privileged: "true"
+              description: Default LXD profile
+              devices:
+                root:
+                  path: /
+                  pool: default
+                  type: disk
+              name: default
+          projects:
+            - config:
+                features.images: "true"
+                features.networks: "true"
+                features.networks.zones: "true"
+                features.profiles: "true"
+                features.storage.buckets: "true"
+                features.storage.volumes: "true"
+              description: Default LXD project
+              name: default
+
+- hosts: localhost
+  tasks:
+    - name: Configure LXD client
+      ansible.builtin.import_role:
         name: gliech.lxd_client
+      vars:
+        lxd_client_remotes: "{{ groups.lxd_servers }}"
 ```
 
 ## License
